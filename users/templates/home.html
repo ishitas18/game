@@ -1,0 +1,101 @@
+{% load static %}
+
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />
+    <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+    <link href="{% static 'fontawesomepro/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomepro/css/brands.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomepro/css/solid.css' %}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">  
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+  </head>
+  <body>
+    <div id="board_div">
+      <h2><span class="heading">Game Summary</span></h2>
+      <div>
+      	{% for medal in medals %}
+      		<div>
+      			{{medal.name}}
+      			{% if medal.name == "Broze" %}
+      				<i class="fas fa-medal"></i>
+            {% elif medal.name == "Silver" %}
+              <i class="fas fa-medal"></i>
+      			{% else %}
+      				<i class="fas fa-star"></i>
+      			{% endif %}
+      		</div>
+      	{% endfor %}
+      </div>
+      <hr style="border:3px solid #f1f1f1">
+      <figure class="highcharts-figure">
+        <div id="container"></div>
+      </figure>
+    </div>
+  </body>
+  <script>
+    data = {{ data|safe }}
+
+    Highcharts.chart('container', {
+
+    chart: {
+      type: 'bubble',
+      plotBorderWidth: 1,
+      zoomType: 'xy'
+    },
+
+    legend: {
+      enabled: false
+    },
+
+    title: {
+      text: 'Score Board'
+    },
+
+    xAxis: {
+    labels: {
+      enabled: false
+    }
+    },
+    
+    yAxis: {
+      startOnTick: false,
+      endOnTick: false,
+      title: {
+        text: 'Score'
+      },
+      maxPadding: 1,
+    },
+
+    tooltip: {
+      useHTML: true,
+      headerFormat: '<table>',
+      pointFormat: '<tr><th colspan="2"><h4>{point.name}</h4></th></tr>' +
+        '<tr><th>Score:</th><td>{point.y}</td></tr>' +
+        '<tr><th>Level:</th><td>{point.level}</td></tr>' +
+        '<tr><th>Medal:</th><td>{point.medal}</td></tr>',
+      footerFormat: '</table>',
+      followPointer: true
+    },
+
+    plotOptions: {
+      series: {
+        dataLabels: {
+          enabled: true,
+          format: '{point.name}'
+        }
+      }
+    },
+
+    series: [{
+      data: data
+    }]
+
+  });
+  </script>
+</html>
